@@ -1,99 +1,76 @@
 //Get players selection 
-let choice = prompt('Enter choice: ', 'ROCK');
-//Change case to upper case to accept any variation entered
-let playerSelection = choice.toUpperCase();
-//Get computer selection
-let computerSelection = computerPlay();
+const selectionButtons = document.querySelectorAll('[data-selection]');
+const computerScoreSpan = document.querySelector('[data-computer-score]')
+const yourScoreSpan = document.querySelector('[data-your-score]')
 
-//One round of the game
-function playRound(playerSelection, computerSelection)
-{
-    //Rock
-    if(computerSelection == 'Rock' && playerSelection == 'PAPER')
+
+const SELECTIONS = [
     {
-        return 1;
+        name: 'Rock', emoji: '✊', beats: 'Scissor'
+    },
+    {
+        name: 'Paper', emoji: '✋', beats: 'Rock'
+    },
+    {
+        name: 'Scissor', emoji: '✌️', beats: 'Paper'
     }
-    else if(computerSelection == 'Rock' && playerSelection == 'SCISSOR')
+];
+
+
+selectionButtons.forEach(selectionButton => {
+    selectionButton.addEventListener('click', e => {
+      const playerSelection = selectionButton.dataset.selection;
+      const selection = SELECTIONS.find(selection => selection.name === playerSelection);
+      makeSelection(selection);
+      
+    })
+  })
+
+    function makeSelection(playerSelection)
     {
-        return -1;
-    }
-    else if(computerSelection == 'Paper' && playerSelection == 'ROCK')
-    {
-        return -1;
-    }
-    else if(computerSelection == 'Scissor' && playerSelection == 'ROCK')
-    {
-        return 1;
-    }
-    else if(computerSelection == 'Paper' && playerSelection == 'SCISSOR')
-    {
-        return 1;
-    }
-    else if(computerSelection == 'Scissor' && playerSelection == 'PAPER')
-    {
-        return -1;
-    }
-    else if((computerSelection == 'Paper' && playerSelection == 'PAPER' )|| (computerSelection == 'Scissor' && playerSelection == 'Scissor') || (computerSelection == 'Rock' && playerSelection == 'ROCK'))
-    {
-        return 0;
+        const computerSelection = computerPlay();    
+        const you = isWinner(playerSelection, computerSelection);
+        const computer = isWinner(computerSelection, playerSelection);
+  
+        console.log(you);
+        console.log(computer);
+  
+        if (you) incrementScore(yourScoreSpan)
+        if (computer) incrementScore(computerScoreSpan)
     }
 
-}
 
-//Computer selection randomly generated
-function computerPlay()
-{
-    let choice = ['Rock', 'Paper', 'Scissor'];
-    const rand = choice[Math.floor(Math.random() * choice.length)];
+ 
+    
+  function incrementScore(scoreSpan) 
+    {
+      scoreSpan.innerText = parseInt(scoreSpan.innerText) + 1
+  }
+
+  function isWinner(a, b)
+  {
+      return a.beats === b.name;
+  }
+
+  function allWinner(yourScoreSpan, computerScoreSpan)
+  {
+      if(yourScoreSpan > computerScoreSpan)
+      {
+          return 1;
+      }
+      else if(computerScoreSpan > yourScoreSpan)
+      {
+          return -1;
+      }
+      else
+      {
+          return 0;
+      }
+  }
+    function computerPlay()
+  {
+    const rand = SELECTIONS[Math.floor(Math.random() * SELECTIONS.length)];
     return rand;
-}
+  }
 
-//Five round of the game
-function game()
-{
-    let p = 0;
-    let c = 0;
-    let t = 0;
-    
-    
-    for(let i = 0; i < 5; i++)
-    {
-        choice = prompt('Enter choice: ', 'ROCK');
-        playerSelection = choice.toUpperCase();
-        computerSelection = computerPlay();
-
-        
-        if(playRound(playerSelection, computerSelection) == 1)
-        {
-            console.log("Player Won");
-            p++;
-        }
-        else if(playRound(playerSelection, computerSelection) == -1)
-        {
-            console.log("Computer Won");
-            c++;
-        }
-        else
-        {
-            console.log("Tie!");
-            t++;
-        }
-    }
-
-    if(p > c && t < p)
-    {
-        console.log("Player is the winner!");
-    }
-    else if(c > p && t < c)
-    {
-        console.log("Computer is the winner!");
-    }
-    else
-    {
-        console.log("Tie! Try Again!");
-    }
-
-}
-
-
-console.log(game());
+  
